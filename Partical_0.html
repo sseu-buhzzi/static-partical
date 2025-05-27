@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partical</title>
+    <style>
+        body {
+            background-color: rgb(4, 0, 16);
+        }
+        #version {
+            user-select: none;
+            position: fixed;
+            font-family: "Consolas", monospace;
+            color: rgba(255, 255, 255, 0.25);
+            z-index: -1;
+        }
+        #partical {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            width: 75vmin;
+            height: 75vmin;
+            background-color: rgba(0, 0, 0, 0.5);
+            transform: translate(-50%, -50%);
+        }
+        #geal {
+            position: fixed;
+            right: 0px;
+            top: 0px;
+            width: 64px;
+            height: 64px;
+            z-index: 1;
+            cursor: pointer;
+        }
+        #geal:hover .pentagon, #geal:hover .pentagon-reversed {
+            fill: rgba(255, 255, 255, 0.25);
+        }
+        #geal:hover circle {
+            fill: rgba(0, 0, 0, 1);
+        }
+        #suspend-or-play {
+            position: fixed;
+            right: 0px;
+            top: 64px;
+            width: 64px;
+            height: 64px;
+            cursor: pointer;
+        }
+        #suspend-or-play:hover polygon, #suspend-or-play:hover .left, #suspend-or-play:hover .right {
+            fill: rgba(255, 255, 255, 0.25);
+        }
+        #clear {
+            position: fixed;
+            right: 0px;
+            top: 128px;
+            width: 64px;
+            height: 64px;
+            cursor: pointer;
+        }
+        #clear:hover path {
+            fill: rgba(255, 255, 255, 0.25);
+        }
+        #field {
+            position: fixed;
+            right: 0px;
+            top: 192px;
+            width: 64px;
+            height: 64px;
+            cursor: pointer;
+        }
+        #field:hover rect, #field:hover path {
+            fill: rgba(255, 255, 255, 0.25);
+        }
+        #direction {
+            position: fixed;
+            right: 0px;
+            top: 256px;
+            width: 64px;
+            height: 64px;
+            cursor: pointer;
+        }
+        #direction:hover circle, #direction:hover polygon {
+            fill: rgba(2555, 255, 255, 0.25);
+        }
+        .curtain {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0 ,0, 0.5);
+            z-index: 0;
+        }
+        .partition {
+            margin: 16px;
+            color: rgb(128, 128, 128);
+            font-family: "Consolas", monospace;
+            font-size: 24px;
+        }
+        .modification {
+            margin: 16px;
+            padding: 0px 4px;
+            display: flex;
+            width: 192px;
+            height: 24px;
+            flex-direction: row;
+            align-items: center;
+            color: rgb(255, 255, 255);
+            border-radius: 4px;
+            font-family: "Consolas", monospace;
+            font-size: 12px;
+            background-color: rgba(255, 255 ,255, 0.5);
+        }
+        .modification span {
+            width: 96px;
+        }
+        .modification textarea {
+            margin: 0px 0px 0px 4px;
+            padding: 0px;
+            overflow: hidden;
+            width: 87.5%;
+            height: 87.5%;
+            color: rgb(255, 255, 255);
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: rgba(0, 0, 0, 0.75);
+            resize: none;
+        }
+        .modification textarea:hover, #factor-matrix-modification > button:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+            box-shadow: 0px 0px 16px rgba(128, 128, 128, 0.5);
+        }
+        .modification .adjust {
+            display: flex;
+            flex-direction: column;
+        }
+        .curtain button {
+            margin: 0px;
+            padding: 0px;
+            width: 10px;
+            height: 10px;
+            font-size: 4px;
+        }
+        .curtain button div {
+            transform: translate(-2px, -3px);
+        }
+        #factor-matrix-modification {
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            width: fit-content;
+            height: fit-content;
+        }
+        #factor-matrix-modification > div {
+            margin: 4px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+        #factor-matrix-modification button {
+            width: 16px;
+            height: 16px;
+            color: rgb(255, 255, 255);
+            border-radius: 4px;
+            background-color: rgba(0, 0,0 , 0.75);
+            cursor: pointer;
+        }
+        #factor-matrix-modification svg {
+            width: 16px;
+            height: 16px;
+        }
+        #factor-matrix-modification textarea {
+            display: none;
+            margin: 4px;
+            overflow: auto;
+            width: 384px;
+            height: fit-content;
+        }
+        #coordinary-modification {
+            width: 384px;
+        }
+        #coordinary-modification textarea {
+            width: 96px;
+        }
+        .direction-keys {
+            position: fixed;
+            display: grid;
+            grid-template-rows: repeat(3, 1fr);
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 16px;
+            padding: 16px;
+            left: 0px;
+            bottom: 0px;
+            width: 256px;
+            height: 256px;
+            border-radius: 16px;
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+        .direction-key {
+            border: 1px solid rgb(128, 128, 128);
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: border-width, box-shadow 0.25s ease-in-out;
+        }
+        .direction-key:hover {
+            border-width: 4px;
+            box-shadow: 0px 0px 16px rgb(128, 128, 128);
+        }
+        .direction-key svg {
+            position: relative;
+            left: 50%;
+            top: 50%;
+            width: 32px;
+            height: 32px;
+            transform: translate(-50%, -50%);
+        }
+        .direction-key:hover path, .direction-key:hover rect {
+            stroke-width: 4px;
+        }
+        #direction-key-up {
+            grid-row: 1;
+            grid-column: 2;
+        }
+        #direction-key-right {
+            grid-row: 2;
+            grid-column: 3;
+        }
+        #direction-key-down {
+            grid-row: 3;
+            grid-column: 2;
+        }
+        #direction-key-left {
+            grid-row: 2;
+            grid-column: 1;
+        }
+        #direction-key-plus {
+            grid-row: 1;
+            grid-column: 1;
+        }
+        #direction-key-minus {
+            grid-row: 1;
+            grid-column: 3;
+        }
+        #direction-key-shift {
+            grid-row: 2;
+            grid-column: 2;
+        }
+    </style>
+</head>
+<body>
+    <p id="version">Version230601_2_25</p>
+    <canvas id = "partical"></canvas>
+    <svg xmlns = "http://www.w3.org/2000/svg" id = "geal">
+        <polygon class = "pentagon" points = "32, 16 18, 27 23, 45 41, 45 47, 27 " stroke = "rgb(255, 255, 255)"/>
+        <polygon class = "pentagon-reversed" points = "32, 48 46, 37 41, 19 23, 19 18, 37" fill = "rgba(0, 0, 0, 0)" stroke = "rgb(255, 255, 255)"/>
+        <circle cx = "32" cy = "32" r = "4" stroke = "rgb(255, 255, 255)">
+    </svg>
+    <svg xmlns = "http://www.w3.org/2000/svg" id = "suspend-or-play">
+        <rect class = "left" x = "20" y = "16" width = "8" height = "32" stroke = "rgb(255, 255, 255)"/>
+        <rect class = "right" x = "36" y = "16" width = "8" height = "32" stroke = "rgb(255, 255, 255)"/>
+    </svg>
+    <svg xmlns = "http://www.w3.org/2000/svg" id = "clear">
+        <path d = "M43, 21 A16, 16 270 1, 1 21, 21 L16, 16 L32, 16 L32, 32 L26, 27 A8, 8 270 1, 0 38, 27 Z" stroke = "rgb(255, 255, 255)"/>
+    </svg>
+    <svg xmlns = "http://www.w3.org/2000/svg" id = "field">
+        <rect x = "16" y = "16" width = "32" height = "32" stroke = "rgb(255, 255, 255)"/>
+        <path d = "M24, 16 Q24, 32 16, 32 M32, 16 Q24, 24 32, 32 T16, 40 M32, 48 Q48, 40 40, 32 T40, 16" stroke = "rgb(255, 255, 255)"/>
+    </svg>
+    <svg xmlns = "http://www.w3.org/2000/svg" id = "direction">
+        <circle cx = "32" cy = "32" r = "4" stroke = "rgb(255, 255, 255)"/>
+        <polygon points = "32, 16 27, 24 37, 24" stroke = "rgb(255, 255, 255)"/>
+        <polygon points = "48, 32 40, 27 40, 37" stroke = "rgb(255, 255, 255)"/>
+        <polygon points = "32, 48 37, 40 27, 40" stroke = "rgb(255, 255, 255)"/>
+        <polygon points = "16, 32 24, 37 24, 27" stroke = "rgb(255, 255, 255)"/>
+    </svg>
+    <template id = "curtain-template">
+        <div class = "curtain">
+            <div class = "partition">運動<hr></div>
+            <div class = "modification" id = "equilibrium-modification">
+                <span>equilibrium</span>
+                <textarea id = "equilibrium-textarea"></textarea>
+                <div class = "adjust"><button><div>▴</div></button><button><div>▾</div></button></div>
+            </div>
+            <div class = "modification" id = "force-range-modification">
+                <span>force&nbsp;range</span>
+                <textarea id = "force-range-textarea"></textarea>
+                <div class = "adjust"><button><div>▴</div></button><button><div>▾</div></button></div>
+            </div>
+            <div class = "modification" id = "decay-modification">
+                <span>speed&nbsp;decay</span>
+                <textarea id = "decay-textarea"></textarea>
+                <div class = "adjust"><button><div>▴</div></button><button><div>▾</div></button></div>
+            </div>
+            <div class = "partition">區域<hr></div>
+            <div class = "modification" id = "width-modification">
+                <span>width</span>
+                <textarea id = "width-textarea"></textarea>
+                <div class = "adjust"><button><div>▴</div></button><button><div>▾</div></button></div>
+            </div>
+            <div class = "modification" id = "height-modification">
+                <span>height</span>
+                <textarea id = "height-textarea"></textarea>
+                <div class = "adjust"><button><div>▴</div></button><button><div>▾</div></button></div>
+            </div>
+            <div class = "modification" id = "depth-modification">
+                <span>depth</span>
+                <textarea id = "depth-textarea"></textarea>
+                <div class = "adjust"><button><div>▴</div></button><button><div>▾</div></button></div>
+            </div>
+            <div class = "partition">粒子<hr></div>
+            <div class = "modification" id = "quantity-modification">
+                <span>quantity</span>
+                <textarea id = "quantity-textarea"></textarea>
+                <div class = "adjust"><button><div>▴</div></button><button><div>▾</div></button></div>
+            </div>
+            <div id = "partical-population"></div>
+            <div class = "modification" id = "elapse-modification">
+                <span>elapse</span>
+                <textarea id = "elapse-textarea"></textarea>
+                <div class = "adjust"><button><div>▴</div></button><button><div>▾</div></button></div>
+            </div>
+            <div class = "modification" id = "variety-modification">
+                <span>variety</span>
+                <textarea id = "variety-textarea"></textarea>
+                <div class = "adjust"><button><div>▴</div></button><button><div>▾</div></button></div>
+            </div>
+            <div class = "modification" id = "factor-matrix-modification">
+                <div>
+                    <span>factor matrix</span>
+                    <button><svg xmlns = "http://www.w3.org/2000/svg">
+                        <path d = "M2, 6 L10, 6 M 6, 2 L6, 10" stroke = "rgb(255, 255, 255)"/>
+                    </svg></button>
+                </div>
+                <textarea id = "factor-matrix-textarea"></textarea>
+            </div>
+            <div class = "partition">視角<hr></div>
+            <div class = "modification" id = "vision-cone-modification">
+                <span>vision&nbsp;cone</span>
+                <textarea id = "vision-cone-textarea"></textarea>
+                <div class = "adjust"><button><div>▴</div></button><button><div>▾</div></button></div>
+            </div>
+            <div class = "modification" id = "coordinary-modification">
+                <span>coordinary</span>
+                <textarea id = "coord0-textarea"></textarea>
+                <div class = "adjust"><button><div>▴</div></button><button><div>▾</div></button></div>
+                <textarea id = "coord1-textarea"></textarea>
+                <div class = "adjust"><button><div>▴</div></button><button><div>▾</div></button></div>
+                <textarea id = "coord2-textarea"></textarea>
+                <div class = "adjust"><button><div>▴</div></button><button><div>▾</div></button></div>
+            </div>
+            <div style = "user-select: none; position: fixed; right: 0px; bottom: 0px; color: rgba(255, 255, 255, 0.25); z-index: -1;">By sseucziawoej/sseubuhzzi 230601</div>
+        </div>
+    </template>
+    <div class = "direction-keys">
+        <div class = "direction-key" id = "direction-key-up"><svg xmlns = "http://www.w3.org/2000/svg">
+            <path d = "M0, 32 L16, 0 L32, 32" fill = "rgba(0, 0, 0, 0)" stroke = "rgb(128, 128, 128)"/>
+        </svg></div>
+        <div class = "direction-key" id = "direction-key-right"><svg xmlns = "http://www.w3.org/2000/svg">
+            <path d = "M0, 0 L32, 16 L0, 32" fill = "rgba(0, 0, 0, 0)" stroke = "rgb(128, 128, 128)"/>
+        </svg></div>
+        <div class = "direction-key" id = "direction-key-down"><svg xmlns = "http://www.w3.org/2000/svg">
+            <path d = "M32, 0 L16, 32 L0, 0" fill = "rgba(0, 0, 0, 0)" stroke = "rgb(128, 128, 128)"/>
+        </svg></div>
+        <div class = "direction-key" id = "direction-key-left"><svg xmlns = "http://www.w3.org/2000/svg">
+            <path d = "M32, 32 L0, 16 L32, 0" fill = "rgba(0, 0, 0, 0)" stroke = "rgb(128, 128, 128)"/>
+        </svg></div>
+        <div class = "direction-key" id = "direction-key-plus"><svg xmlns = "http://www.w3.org/2000/svg">
+            <path d = "M0, 16 L32, 16 M16, 0 L16, 32" fill = "rgba(0, 0, 0, 0)" stroke = "rgb(128, 128, 128)"/>
+        </svg></div>
+        <div class = "direction-key" id = "direction-key-minus"><svg xmlns = "http://www.w3.org/2000/svg">
+            <path d = "M0, 16 L32, 16" fill = "rgba(0, 0, 0, 0)" stroke = "rgb(128, 128, 128)"/>
+        </svg></div>
+        <div class = "direction-key" id = "direction-key-shift"><svg xmlns = "http://www.w3.org/2000/svg">
+            <rect x = "0" y = "0" width = "32" height = "32" fill = "rgba(0, 0, 0, 0)" stroke = "rgb(128, 128, 128)" stroke-dasharray = "2, 2"/>
+            <rect x =  "8" y = "8" width = "16" height = "16" fill = "rgba(0, 0, 0, 0)" stroke = "rgb(128, 128, 128)"/>
+        </svg></div>
+    </div>
+    <script src = "./Partical.js"></script>
+    <script src = "./Setting.js"></script>
+</body>
+</html>
