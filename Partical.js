@@ -1,22 +1,6 @@
 var canvas = document.getElementById("partical");
 var context = canvas.getContext("2d");
 
-var equilibrium = 0.25;
-var force_range = 256;
-var decay = 0.5;
-
-var width = 4096;
-var height = 4096;
-var depth = 256;
-
-var quantity = 4096;
-var elapse = 0;
-var variety = 16;
-
-var vision_cone = 60;
-
-var drawing_field = false;
-
 function resize_canvas() {
     canvas.width = canvas.height = Math.min(Math.max(width, height, depth, 1024), 2048);
 }
@@ -130,9 +114,9 @@ function force(r, a) {
 }
 
 const camera = {
-    phi: 180,
-    theta: 90,
-    rho: 4096,
+    phi: camera_phi,
+    theta: camera_theta,
+    rho: camera_rho,
     coord: [0, 0, 0],
     orthographic: false,
     lateral_move(movement) {
