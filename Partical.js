@@ -1,3 +1,49 @@
+var equilibrium = 0.25;
+var force_range = 256;
+var decay = 0.5;
+
+var width = 512;
+var height = 512;
+var depth = 512;
+
+var quantity = 512;
+var elapse = 0;
+var variety = 3;
+
+var vision_cone = 60;
+
+var drawing_field = false;
+
+var camera_phi = 135;
+var camera_theta = 45;
+var camera_rho = 1024;
+
+new URLSearchParams(location.search).forEach((value, key) => {
+	switch (key) {
+		case "equilibrium": equilibrium = parseFloat(value); break;
+		case "force_range": force_range = parseInt(value); break;
+		case "decay": decay = parseFloat(value); break;
+
+		case "width": width = parseInt(value); break;
+		case "height": height = parseInt(value); break;
+		case "depth": depth = parseInt(value); break;
+
+		case "quantity": quantity = parseInt(value); break;
+		case "elapse": elapse = parseFloat(value); break;
+		case "variety": variety = parseInt(value); break;
+
+		case "vision_cone": vision_cone = parseFloat(value); break;
+
+		case "drawing_field": drawing_field = parseInt(value) !== 0; break;
+
+		case "camera_phi": camera_phi = parseFloat(value); break;
+		case "camera_theta": camera_theta = parseFloat(value); break;
+		case "camera_rho": camera_rho = parseFloat(value); break;
+
+		default: console.warn("Unknown parameter:", key);
+	}
+});
+
 var canvas = document.getElementById("partical");
 var context = canvas.getContext("2d");
 
