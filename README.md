@@ -7,7 +7,7 @@ Particals move within a confined space with simple, deterministic rules.
 
 ## Available Pages
 
-- `index.html`: default simulation
-- `index-squat.html`: simulation with parameter controls
+- [index.html](https://sseu-buhzzi.github.io/static-partical/index.html): default simulation
+- [index-squat.html](https://sseu-buhzzi.github.io/static-partical/index-squat.html): simulation with parameter controls
 
 **Created**: 2023/04/15
