@@ -594,14 +594,13 @@ epoch.start();
 epoch.play();
 
 let aSelf = 1, aAdjoin = 0.5, aApart = -0.5;
-factor_matrix = Array.from(new Array(variety)).map((() => {
-	let temp = [aApart, aAdjoin, aSelf, aAdjoin, aApart].concat(...Array.from(new Array(variety - 5)).map(() => 0));
-	// temp = temp.slice(2).concat(temp.slice(0, 2));
+factor_matrix = Array(variety).fill().map((() => {
+	let temp = [aApart, aAdjoin, aSelf, aAdjoin, aApart, ...Array(variety).fill(0)].slice(0, variety);
+	// temp = [...temp.slice(2), ...temp.slice(0, 2)];
 	return () => {
 		let row = temp;
-		temp = temp.slice(-1).concat(temp.slice(0, -1));
+		temp = [temp.at(-1), ...temp.slice(0, -1)];
 		return row;
 	};
-	
 })());
-// epoch.particals.list = Array.from(new Array(quantity)).flatMap((value, index) => new Partical(Math.floor(index * variety / quantity)));
+// epoch.particals.list = Array(quantity).fill().flatMap((...[, index]) => new Partical(Math.floor(index * variety / quantity)));
